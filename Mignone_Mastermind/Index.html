@@ -1,31 +1,22 @@
 <!DOCTYPE html>
-
-<head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="main.js"></script>
-    <link href="main.css" rel="stylesheet" type="text/css">
-</head>
 <html>
-
+<head>
+    <link href="main.css" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!-- Include jQuery here -->
+</head>
 <body>
-    <section class="TentativiUtente" name="TentativiUtente">
-        <p class="txta">
-            Prova ad indovinare il numero generato, inserisci un numero di 4 cifre nella casella di testo e verifica il
-            tuo tentativo.
+    <div class="game-container">
+        <h1>Mastermind Game</h1>
+        <p class="description">
+            Try to guess the secret code! Enter a 4-digit number in the text box and click "Verify."
         </p>
-        <input type="text" id="userValue"></input>
-        <button class="btn-13" id="ver" onclick="UserGet()">Verifica tentativo</button>
-        <button class="btnlose" onclick=" LoseORWinAndReset()">Riavvia la partita</button>
-    </section>
-    <section name="TentativiEseguiti" id="tentativi" class="centro">
-    </section>
-    <section name="numtentativi" class="centro">
-        <div id="numtent"></div>
-    </section>
-    <section name="statosection" class="centro">
-        <div id="status"></div>
-    </section>
-
+        <input type="text" id="userValue" maxlength="4" placeholder="Enter a 4-digit number">
+        <button id="ver" class="btn-13" onclick="checkUserAttempt()">Verify</button>
+        <button class="btnlose" onclick="resetGame()">Restart</button>
+        <div id="tentativi" class="center"></div>
+        <div id="numtent" class="center"></div>
+        <div id="status" class="center"></div>
+    </div>
+    <script src="main.js"></script>
 </body>
-
 </html>

@@ -1,111 +1,82 @@
+let secretCode = [];
+let userAttempts = 0;
+const maxAttempts = 10;
+let correctDigits = 0;
+let correctPositions = 0;
+
 $(document).ready(function () {
-    generateUniqueRandom(maxNr);
-    console.log('Unique random numbers:', ArraySistema);
+    generateSecretCode();
+    document.getElementById("numtent").innerHTML = "Current attempts: " + userAttempts;
 });
 
-let ArraySistema = [];
-let ArrayUtente = [];
-var maxNr = 9;
-var NumeroTentativi = 0;
-var CounterCorrect = 0;
-var PositionCorrect = 0;
-
-function containsDuplicates(array) {
-    if (array.length !== new Set(array).size) {
-        return true;
-    }
-    else {
-        return false;
+function generateSecretCode() {
+    secretCode = [];
+    for (let i = 0; i < 4; i++) {
+        let random = Math.floor(Math.random() * 10);
+        secretCode.push(random);
     }
 }
 
-function generateUniqueRandom(maxNr) {
-    for (i = 0; i <= 3; i++) {
-        let random = (Math.random() * maxNr).toFixed();
-        ArraySistema.push(random);
-    }
-    if (containsDuplicates(ArraySistema) == true) {
-        ArraySistema.length = 0;
-    }
-    if (ArraySistema.length == 0) {
-        generateUniqueRandom(maxNr);
-    }
-}
+function checkUserAttempt() {
+    let userGuessString = document.getElementById("userValue").value;
+    let userGuess = userGuessString.split('').map(Number);
 
-function UserGet() {
-    var utentelinear = document.getElementById("userValue").value;
-    parseInt(utentelinear);
-    if (isNaN(utentelinear) === false) {
-        ArrayUtente = utentelinear.split('');
-        if (ArrayUtente.length === 4) {
-            if (containsDuplicates(ArrayUtente) === false) {
-                NumeroTentativi++;
-                document.getElementById("numtent").innerHTML = "Tenteativi attuali: " + NumeroTentativi;
-                VerificaNumero();
-                if (NumeroTentativi === 10) {
-                    document.getElementById("ver").disabled = true;
-                    document.getElementById("status").innerHTML = "HAI PERSO";
-                }
-            }
-            else {
-                ArrayUtente.length = 0;
-                alert("I numeri inseriti non devono essere uguali tra loro");
-            }
-        }
-        else {
-            ArrayUtente.length = 0;
-            alert("Inserire una sequenza di numeri lunga quattro cifre");
-        }
+    if (isNaN(userGuessString) || userGuessString.length !== 4 || containsDuplicates(userGuess)) {
+        alert("Please enter a valid 4-digit number with non-repeating digits.");
+        return;
     }
-    else {
-        ArrayUtente.length = 0;
-        alert("Inserire una sequenza di soli numeri lunga quattro cifre");
-    }
-}
 
-function VerificaNumero() {
-    if (ArrayUtente.includes(ArraySistema[0])) {
-        CounterCorrect++;
-        if (ArrayUtente[0] === ArraySistema[0]) {
-            PositionCorrect++;
-        }
-    }
-    if (ArrayUtente.includes(ArraySistema[1])) {
-        CounterCorrect++;
-        if (ArrayUtente[1] === ArraySistema[1]) {
-            PositionCorrect++;
-        }
-    }
-    if (ArrayUtente.includes(ArraySistema[2])) {
-        CounterCorrect++;
-        if (ArrayUtente[2] === ArraySistema[2]) {
-            PositionCorrect++;
-        }
-    }
-    if (ArrayUtente.includes(ArraySistema[3])) {
-        CounterCorrect++;
-        if (ArrayUtente[3] === ArraySistema[3]) {
-            PositionCorrect++;
-        }
-    }
-    var tenta = document.getElementById("tentativi");
-    var p = document.createElement('p');
-    p.innerHTML = 'Il tuo tentativo: ' + ArrayUtente.toString() + ' Numero di cifre corette: ' + CounterCorrect + ' Numero di cifre nella posizione giusta: ' + PositionCorrect;
-    tenta.appendChild(p);
-    if (CounterCorrect === 4 && PositionCorrect === 4) {
-        document.getElementById("status").innerHTML = "HAI VINTO";
+    userAttempts++;
+    document.getElementById("numtent").innerHTML = "Current attempts: " + userAttempts;
+
+    checkNumber(userGuess);
+
+    let tentativiDiv = document.getElementById("tentativi");
+    let p = document.createElement('p');
+    p.innerHTML = 'Your guess: ' + userGuess.join('') + ' Correct digits: ' + correctDigits + ' Correct positions: ' + correctPositions;
+    tentativiDiv.appendChild(p);
+
+    if (correctPositions === 4) {
+        document.getElementById("status").innerHTML = "Congratulations! You've cracked the code!";
+        document.getElementById("ver").disabled = true;
+    } else if (userAttempts === maxAttempts) {
+        document.getElementById("status").innerHTML = "Game Over. The secret code was: " + secretCode.join('');
         document.getElementById("ver").disabled = true;
     }
-    else {
-        document.getElementById("status").innerHTML = "RITENTA";
+
+    document.getElementById("userValue").value = "";
+}
+
+function containsDuplicates(array) {
+    return array.length !== new Set(array).size;
+}
+
+function checkNumber(userGuess) {
+    correctDigits = 0;
+    correctPositions = 0;
+
+    for (let i = 0; i < secretCode.length; i++) {
+        if (userGuess.includes(secretCode[i])) {
+            correctDigits++;
+            if (userGuess[i] === secretCode[i]) {
+                correctPositions++;
+            }
+        }
     }
-    CounterCorrect = 0;
-    PositionCorrect = 0;
 }
 
-function LoseORWinAndReset() {
-    window.location.reload();
+function resetGame() {
+    const confirmRestart = window.confirm("Are you sure you want to restart the game? Your progress will be lost.");
+
+    if (confirmRestart) {
+        generateSecretCode();
+        userAttempts = 0;
+        correctDigits = 0;
+        correctPositions = 0;
+        document.getElementById("tentativi").innerHTML = "";
+        document.getElementById("numtent").innerHTML = "Current attempts: " + userAttempts;
+        document.getElementById("status").innerHTML = "";
+        document.getElementById("ver").disabled = false;
+        document.getElementById("userValue").value = "";
+    }
 }
-
-
-
